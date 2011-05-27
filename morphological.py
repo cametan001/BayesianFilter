@@ -1,11 +1,11 @@
 #!/usr/bin/env python 
 # -*- coding: utf-8 -*- 
 
-import urllib, urllib2
+import urllib, urllib2, os.path
 from BeautifulSoup import BeautifulSoup
 
 # 'Yahoo!デベロッパーズネットワークのアプリケーションIDをAppIDと言う別ファイルに保存しておく
-f = open('AppID', 'r')
+f = open(os.path.join(os.path.dirname(__file__), 'AppID'), 'r')
 appid = f.readline().rstrip()
 f.close()
 pageurl = "http://jlp.yahooapis.jp/MAService/V1/parse"
