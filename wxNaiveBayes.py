@@ -61,9 +61,9 @@ class wxNaiveBayes(wx.Frame):
             result  = trainDlg.ShowModal()
             
             if result == wx.ID_OK:
-                doc = trainDlg.text_ctrl_1.GetValue().encode('utf-8')
+                doc = trainDlg.text_ctrl_1.GetValue()
                 print doc               # デバッグ用プリント
-                cat = trainDlg.text_ctrl_2.GetValue().encode('utf-8')
+                cat = trainDlg.text_ctrl_2.GetValue()
                 print cat               # デバッグ用プリント
                 nb.train(doc, cat)
                 
@@ -77,7 +77,7 @@ class wxNaiveBayes(wx.Frame):
             result = classifierDlg.ShowModal()
 
             if result == wx.ID_OK:
-                self.words = classifierDlg.text_ctrl_3.GetValue().encode('utf-8')
+                self.words = classifierDlg.text_ctrl_3.GetValue()
                 print self.words               # デバッグ用プリント
             else: event.Skip()
 
