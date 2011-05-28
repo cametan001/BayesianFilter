@@ -4,12 +4,24 @@
 
 import wx
 import naivebayes as nb
+import logging
+import logging.config
+import os.path
+
+LOGLEVEL = logging.INFO
 
 # begin wxGlade: extracode
 # end wxGlade
 
 class wxNaiveBayes(wx.Frame, nb.NaiveBayes):
     def __init__(self, *args, **kwds):
+
+        #ログファイルの設定
+        logging.basicConfig(level=LOGLEVEL,
+            format ='%(module)s %(filename)s %(pathname)s',
+            filename = os.path.join(os.path.dirname(__file__), 'naivebayes.log'),
+            filemode = 'w')
+
         # begin wxGlade: wxNaiveBayes.__init__
         kwds["style"] = wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kwds)
@@ -54,6 +66,7 @@ class wxNaiveBayes(wx.Frame, nb.NaiveBayes):
         # end wxGlade
 
     def onOpen(self, event): # wxGlade: wxNaiveBayes.<event_handler>
+        
         # チェックボックスの情報を感知
         if self.rb1.GetValue():
             # 訓練にチェックが入ってた場合
@@ -65,9 +78,12 @@ class wxNaiveBayes(wx.Frame, nb.NaiveBayes):
                 print doc               # デバッグ用プリント
                 cat = trainDlg.text_ctrl_2.GetValue()
                 print cat               # デバッグ用プリント
-                self.train(doc, cat)
+                try:
+                    self.train(doc, cat)
+                except:
+                    logging.error(traceback.format_exc())
                 
-            else: event.Skip()
+                else: event.Skip()
 
             trainDlg.Destroy()
 
@@ -79,12 +95,16 @@ class wxNaiveBayes(wx.Frame, nb.NaiveBayes):
             if result == wx.ID_OK:
                 words = classifierDlg.text_ctrl_3.GetValue()
                 print words               # デバッグ用プリント
-                self.Display.Append([u'%s' % words, u'%s' % self.classifier(words)])
+                try:
+                    self.Display.Append([u'%s' % words, u'%s' % self.classifier(words)])
+                except:
+                    logging.error(traceback.format_exc())
                 print self.classifier(words) # デバッグ用プリント
             else: event.Skip()
 
             classifierDlg.Destroy()
         else: event.Skip()
+        
         
     def onClose(self, event): # wxGlade: wxNaiveBayes.<event_handler>
         self.Close()
