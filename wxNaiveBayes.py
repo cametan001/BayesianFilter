@@ -8,27 +8,27 @@ import naivebayes
 # begin wxGlade: extracode
 # end wxGlade
 
-nb = naivebayes.NaiveBayes()
-
-class wxNaiveBayes(wx.Frame):
+class wxNaiveBayes(wx.Frame, naivebayes.NaiveBayes):
     def __init__(self, *args, **kwds):
         # begin wxGlade: wxNaiveBayes.__init__
         kwds["style"] = wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kwds)
         self.rb1 = wx.RadioButton(self, -1, u"訓練")
         self.rb2 = wx.RadioButton(self, -1, u"分類")
-        self.Display = wx.StaticText(self, -1, "label_1")
+        self.Display = wx.ListCtrl(self, -1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
         self.btnOpen = wx.Button(self, wx.ID_OPEN, "")
-        self.btnApply = wx.Button(self, wx.ID_APPLY, "")
         self.btnClose = wx.Button(self, wx.ID_CLOSE, "")
 
         self.__set_properties()
         self.__do_layout()
 
         self.Bind(wx.EVT_BUTTON, self.onOpen, self.btnOpen)
-        self.Bind(wx.EVT_BUTTON, self.onApply, self.btnApply)
         self.Bind(wx.EVT_BUTTON, self.onClose, self.btnClose)
         # end wxGlade
+        naivebayes.NaiveBayes.__init__(self)
+
+        cs = ["文", "推定カテゴリ"]
+        [self.Display.InsertColumn(cs.index(heading), heading) for heading in cs]
 
     def __set_properties(self):
         # begin wxGlade: wxNaiveBayes.__set_properties
@@ -42,9 +42,9 @@ class wxNaiveBayes(wx.Frame):
         sizer_3 = wx.BoxSizer(wx.HORIZONTAL)
         sizer_2.Add(self.rb1, 0, 0, 0)
         sizer_2.Add(self.rb2, 0, 0, 0)
-        sizer_2.Add(self.Display, 6, 0, 0)
+        sizer_2.Add(self.Display, 7, wx.EXPAND, 0)
+        sizer_3.Add((100, 30), 0, 0, 0)
         sizer_3.Add(self.btnOpen, 0, 0, 0)
-        sizer_3.Add(self.btnApply, 0, 0, 0)
         sizer_3.Add(self.btnClose, 0, 0, 0)
         sizer_2.Add(sizer_3, 1, wx.EXPAND, 0)
         sizer_1.Add(sizer_2, 1, wx.EXPAND, 0)
@@ -65,7 +65,7 @@ class wxNaiveBayes(wx.Frame):
                 print doc               # デバッグ用プリント
                 cat = trainDlg.text_ctrl_2.GetValue()
                 print cat               # デバッグ用プリント
-                nb.train(doc, cat)
+                self.train(doc, cat)
                 
             else: event.Skip()
 
@@ -79,14 +79,13 @@ class wxNaiveBayes(wx.Frame):
             if result == wx.ID_OK:
                 self.words = classifierDlg.text_ctrl_3.GetValue()
                 print self.words               # デバッグ用プリント
+                self.Display.Append([u'%s' % self.words, u'%s' % self.classifier(self.words)])
+                print self.classifier(self.words) # デバッグ用プリント
             else: event.Skip()
 
             classifierDlg.Destroy()
         else: event.Skip()
-            
-    def onApply(self, event): # wxGlade: wxNaiveBayes.<event_handler>
-        print u'%s => 推定カテゴリ: %s' % (self.words, nb.classifier(self.words))
-
+        
     def onClose(self, event): # wxGlade: wxNaiveBayes.<event_handler>
         self.Close()
 

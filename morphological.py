@@ -19,6 +19,6 @@ def split(sentence, appid = appid, results = "ma", filter = "1|2|3|4|5|9|10"):
 
     return [w.surface.string for w in soup.ma_result.word_list]
 
-if __name__ == '__main__':
-    for i in split(u'庭には二羽にわとりがいる'):
-        print i,
+# if __name__ == '__main__':
+#     for i in split(u'庭には二羽にわとりがいる'):
+#         print i,
